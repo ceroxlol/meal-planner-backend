@@ -17,7 +17,6 @@ mongoose.connect("mongodb://localhost:27017/meals", {
 
 // Define a Meal schema
 const mealSchema = new mongoose.Schema({
-  id: Number,
   title: String,
   ingredients: [String],
   cookTime: Number,
