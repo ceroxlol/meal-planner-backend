@@ -21,7 +21,7 @@ mongoose.connect("mongodb://localhost:27017/meals", {
 const mealSchema = new mongoose.Schema({
   title: String,
   ingredients: [String],
-  cookTime: Number,
+  cookingTime: Number,
   effortLevel: Number,
   imageUrl: { type: String, required: false },
 });
@@ -64,7 +64,7 @@ app.post("/api/meals/daily/reset", async (req, res) => {
   try {
     console.log("Resetting daily meal");
     await setDailyMeal();
-    res.json({ message: "Daily meal reset" });
+    res.json(dailyMeal);
   } catch (error) {
     console.error("Error resetting daily meal:", error);
     res.status(500).json({ error: error.message });
@@ -104,6 +104,9 @@ app.delete("/api/meals/:id", async (req, res) => {
     console.log(`Deleting meal with id ${req.params.id}`);
     await Meal.findByIdAndDelete(req.params.id);
     console.log("Meal deleted");
+    if(dailyMeal._id == req.params.id) {
+      await setDailyMeal();
+    }
     res.json({ message: "Meal deleted" });
   } catch (error) {
     console.error(`Error deleting meal with id ${req.params.id}:`, error);
