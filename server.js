@@ -9,6 +9,8 @@ app.use(cors()); // Allow cross-origin requests
 app.use(bodyParser.json());
 app.use(morgan("combined")); // Add morgan middleware for logging
 
+let dailyMeal = {};
+
 // Connect to MongoDB
 mongoose.connect("mongodb://localhost:27017/meals", {
   useNewUrlParser: true,
@@ -36,6 +38,25 @@ app.get("/api/meals", async (req, res) => {
     res.json(meals);
   } catch (error) {
     console.error("Error fetching meals:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// Get Daily Meal
+app.get("/api/meals/daily", async (req, res) => {
+  try {
+    console.log("Fetching daily meal");
+    if (dailyMeal.title) {
+      res.json(dailyMeal);
+      return;
+    }
+    const meals = await Meal.find();
+    const randomIndex = Math.floor(Math.random() * meals.length);
+    dailyMeal = meals[randomIndex];
+    res.json(dailyMeal);
+  } catch (error) {
+    console.error("Error fetching daily meal:", error);
     res.status(500).json({ error: error.message });
   }
 });
