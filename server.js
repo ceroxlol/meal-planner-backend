@@ -51,12 +51,22 @@ app.get("/api/meals/daily", async (req, res) => {
       res.json(dailyMeal);
       return;
     }
-    const meals = await Meal.find();
-    const randomIndex = Math.floor(Math.random() * meals.length);
-    dailyMeal = meals[randomIndex];
+    await setDailyMeal();
     res.json(dailyMeal);
   } catch (error) {
     console.error("Error fetching daily meal:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Reset Daily Meal
+app.post("/api/meals/daily/reset", async (req, res) => {
+  try {
+    console.log("Resetting daily meal");
+    await setDailyMeal();
+    res.json({ message: "Daily meal reset" });
+  } catch (error) {
+    console.error("Error resetting daily meal:", error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -105,3 +115,11 @@ app.delete("/api/meals/:id", async (req, res) => {
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
 });
+
+
+async function setDailyMeal() {
+  const meals = await Meal.find();
+  const randomIndex = Math.floor(Math.random() * meals.length);
+  dailyMeal = meals[randomIndex];
+}
+
