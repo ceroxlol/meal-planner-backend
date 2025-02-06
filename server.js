@@ -11,8 +11,10 @@ app.use(morgan("combined")); // Add morgan middleware for logging
 
 let dailyMeal = {};
 
+const mongoDbUrl = (process.env.MONGO_DB_URL || "mongodb://localhost:27017") + "/meals";
+
 // Connect to MongoDB
-mongoose.connect("mongodb://localhost:27017/meals", {
+mongoose.connect(mongoDbUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
