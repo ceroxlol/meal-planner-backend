@@ -5,7 +5,13 @@ const cors = require("cors");
 const morgan = require("morgan");
 
 const app = express();
-app.use(cors()); // Allow cross-origin requests
+const corsOptions = {
+  origin: ['http://localhost:4200', 'http://angular:80', 'http://angular', 'http://express:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+  credentials: true
+};
+app.use(cors(corsOptions)); // Allow cross-origin requests
 app.use(bodyParser.json());
 app.use(morgan("combined")); // Add morgan middleware for logging
 
@@ -49,7 +55,7 @@ app.get("/api/meals", async (req, res) => {
 app.get("/api/meals/daily", async (req, res) => {
   try {
     console.log("Fetching daily meal");
-    if (dailyMeal.title) {
+    if (dailyMeal && dailyMeal.title) {
       res.json(dailyMeal);
       return;
     }
